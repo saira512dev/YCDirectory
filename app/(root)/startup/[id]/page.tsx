@@ -68,8 +68,8 @@ const Startup = async ({ params }: { params: Promise<{ id: string }> }) => {
         </div>
         <hr className="divider" />
 
-        <Suspense fallback={<Skeleton className="view_skeleton"/>}>
-<View id={id}/>
+        <Suspense fallback={<Skeleton className="view_skeleton" />}>
+          <View id={id} />
         </Suspense>
       </section>
     </>
