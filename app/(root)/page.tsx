@@ -14,7 +14,7 @@ export default async function Home({
   const params = { search: query || null };
   const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
   const session = await auth();
-  if (session) console.log(session);
+  if (session) console.log("HERE", session.user.id);
   return (
     <>
       <section className="pink_container">
