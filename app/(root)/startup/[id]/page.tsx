@@ -1,8 +1,12 @@
+import StartupCard, { StartupTypeCard } from "@/app/components/StartupCard";
 import View from "@/app/components/View";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/utils";
 import { client } from "@/sanity/lib/client";
-import { STARTUP_BY_ID_QUERY } from "@/sanity/lib/queries";
+import {
+  PLAYLIST_BY_SLUG_QUERY,
+  STARTUP_BY_ID_QUERY,
+} from "@/sanity/lib/queries";
 import markdownit from "markdown-it";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,7 +20,13 @@ const md = markdownit();
 const Startup = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
 
-  const post = await client.fetch(STARTUP_BY_ID_QUERY, { id });
+  const [post, { select: viewersPicks }] = await Promise.all([
+    client.fetch(STARTUP_BY_ID_QUERY, { id }),
+    client.fetch(PLAYLIST_BY_SLUG_QUERY, {
+      slug: "viewer-s-pick",
+    }),
+  ]);
+
   if (!post) return notFound();
   const parsedContent = md.render(post?.pitch || "");
 
@@ -67,7 +77,16 @@ const Startup = async ({ params }: { params: Promise<{ id: string }> }) => {
           )}
         </div>
         <hr className="divider" />
-
+        {viewersPicks?.length > 0 && (
+          <div className="max-w-4xl mx-auto">
+            <p className="text-30-semibold">Viewer Picks</p>
+            <ul className="mt-7 card_grid-sm">
+              {viewersPicks.map((post: StartupTypeCard, index: number) => (
+                <StartupCard key={index} post={post} />
+              ))}
+            </ul>
+          </div>
+        )}
         <Suspense fallback={<Skeleton className="view_skeleton" />}>
           <View id={id} />
         </Suspense>
