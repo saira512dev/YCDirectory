@@ -1,20 +1,39 @@
 import Image from "next/image";
 import SearchForm from "@/components/SearchForm";
 import StartupCard, { StartupTypeCard } from "../components/StartupCard";
-import { STARTUPS_QUERY } from "@/sanity/lib/queries";
+import {
+  BOOKMARKED_STARTUPS_BY_USER,
+  LIKED_STARTUPS_BY_USER,
+  STARTUPS_QUERY,
+} from "@/sanity/lib/queries";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import { auth } from "@/auth";
+import ClientStartupList from "../components/StartupList";
+import Startup from "./startup/[id]/page";
+import { enrichStartups } from "@/lib/enrichStartups";
 
 export default async function Home({
   searchParams,
 }: {
   searchParams: Promise<{ query?: string }>;
 }) {
-  const query = (await searchParams).query;
-  const params = { search: query || null };
-  const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
+  const query = (await searchParams).query?.toLowerCase();
+  const wildcardSearch = query ? `*${query}*` : null;
+  const { data: posts } = await sanityFetch({
+    query: STARTUPS_QUERY,
+    params: { search: wildcardSearch },
+  });
+  let enrichedPosts = posts;
+
   const session = await auth();
-  // if (session) console.log("HERE", session.user.id);
+  if (session) {
+    enrichedPosts = await enrichStartups({
+      startups: posts,
+      userId: session.user.id,
+    });
+  }
+  // console.log(enrichedPosts);
+
   return (
     <>
       <section className="pink_container">
@@ -32,15 +51,7 @@ export default async function Home({
         <p className="text-30-semibold text-center mt-2">
           {query ? `Search results for "${query}" ` : `All Startups`}
         </p>
-        <ul className="mt-7 card_grid p-4">
-          {posts?.length > 0 ? (
-            posts.map((post: StartupTypeCard, index: number) => (
-              <StartupCard key={post?._id} post={post} />
-            ))
-          ) : (
-            <p className="no-results">No Startups Found</p>
-          )}
-        </ul>
+        <ClientStartupList startups={enrichedPosts} />
       </section>
       <SanityLive />
     </>
