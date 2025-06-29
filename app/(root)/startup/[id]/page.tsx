@@ -1,6 +1,9 @@
+import LikeBookmarkActions from "@/app/components/LikeBookmarkActions";
 import StartupCard, { StartupTypeCard } from "@/app/components/StartupCard";
 import View from "@/app/components/View";
+import { auth } from "@/auth";
 import { Skeleton } from "@/components/ui/skeleton";
+import { enrichStartups } from "@/lib/enrichStartups";
 import { formatDate } from "@/lib/utils";
 import { client } from "@/sanity/lib/client";
 import {
@@ -28,8 +31,21 @@ const Startup = async ({ params }: { params: Promise<{ id: string }> }) => {
   ]);
 
   if (!post) return notFound();
+  let enrichedViewerPicks = viewersPicks;
+  let enrichedPost = post;
+  const session = await auth();
+  if (session) {
+    enrichedViewerPicks = await enrichStartups({
+      startups: viewersPicks,
+      userId: session.user.id,
+    });
+    enrichedPost = await enrichStartups({
+      startups: [post],
+      userId: session.user.id,
+    });
+  }
   const parsedContent = md.render(post?.pitch || "");
-
+  console.log(enrichedPost);
   return (
     <>
       <section className="pink_container !min-h-[230px]">
@@ -39,13 +55,23 @@ const Startup = async ({ params }: { params: Promise<{ id: string }> }) => {
         <p className="sub-heading !max-w-5xl">{post.description}</p>
       </section>
       <section className="section_container">
+        <div className="mx-auto max-w-4xl mb-2">
+          <LikeBookmarkActions
+            startupId={id}
+            initialLiked={enrichedPost[0].hasLiked ?? false}
+            initialBookmarked={enrichedPost[0].hasBookmarked ?? false}
+            initialLikeCount={enrichedPost[0].likeCount || 0}
+            initialBookmarkCount={enrichedPost[0].bookmarkCount || 0}
+          />
+        </div>
+
         <img
           src={post.image}
           alt="post-thumbnail"
           className="w-full max-w-4xl mx-auto h-auto rounded-xl"
         />
         <div className="space-y-5 mt-10 max-w-4xl mx-auto">
-          <div className="flex-between gap-5">
+          <div className="flex flex-col gap-3 xs:flex-row xs:justify-between xs:items-center">
             <Link
               href={`/user/${post.author?._id}`}
               className="flex gap-2 items-center mb-3"
@@ -81,9 +107,11 @@ const Startup = async ({ params }: { params: Promise<{ id: string }> }) => {
           <div className="max-w-4xl mx-auto">
             <p className="text-30-semibold">Viewer Picks</p>
             <ul className="mt-7 card_grid-sm">
-              {viewersPicks.map((post: StartupTypeCard, index: number) => (
-                <StartupCard key={index} post={post} />
-              ))}
+              {enrichedViewerPicks.map(
+                (post: StartupTypeCard, index: number) => (
+                  <StartupCard key={index} post={post} />
+                )
+              )}
             </ul>
           </div>
         )}

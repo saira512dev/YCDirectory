@@ -1,13 +1,23 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn, formatDate } from "@/lib/utils";
 import { Author, Startup } from "@/sanity.types";
-import { EyeIcon } from "lucide-react";
+import { toggleLike } from "@/lib/toggleLike";
+import { toggleBookmark } from "@/lib/toggleBookmark";
+import { BookmarkIcon, EyeIcon, Heart, HeartIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { useState, useTransition } from "react";
+import LikeBookmarkActions from "./LikeBookmarkActions";
 
-export type StartupTypeCard = Omit<Startup, "author"> & { author?: Author };
+export type StartupTypeCard = Omit<Startup, "author"> & {
+  author?: Author;
+  likeCount?: number;
+  bookmarkCount?: number;
+  hasLiked?: boolean;
+  hasBookmarked?: boolean;
+};
 
 const StartupCard = ({ post }: { post: StartupTypeCard }) => {
   const {
@@ -20,58 +30,56 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
     description,
     image,
   } = post;
+  // console.log(post);
+
   return (
-    <li className="startup-card group">
-      <div className="flex-between">
-        <p className="startup_card_date">{formatDate(_createdAt)}</p>
-        <div className="flex gap-1.5">
-          <EyeIcon className="size-6 text-primary" />
-          <span className="text-16-medium">{views}</span>
+    <li className="relative rounded-lg border shadow-sm hover:shadow-lg p-4 bg-white">
+      <div className="flex justify-between items-center mb-2 text-gray-500">
+        <LikeBookmarkActions
+          startupId={_id}
+          initialLiked={post.hasLiked ?? false}
+          initialBookmarked={post.hasBookmarked ?? false}
+          initialLikeCount={post.likeCount || 0}
+          initialBookmarkCount={post.bookmarkCount || 0}
+        />
+        <div className="flex items-center gap-1">
+          <EyeIcon className="w-5 h-5 text-primary" />
+          <span>{views}</span>
         </div>
       </div>
-      <div className="flex-between mt-5 gap-5">
-        <div className="flex-1">
-          <Link href={`/user/${author?.id}`}>
-            <p className="text-16-medium line-clamp-1">{author?.name}</p>
-          </Link>
-          <Link href={`/startup/${_id}`}>
-            <h3 className="text-26-semibold line-clamp-1">{title}</h3>
-          </Link>
-        </div>
-        <Link href={`/user/${author?.id}`}>
-          <Image
-            src={author?.image}
-            alt={author?.name}
-            width={48}
-            height={48}
-            className="rounded-full"
-          />
-        </Link>
-      </div>
+
+      {/* Title */}
       <Link href={`/startup/${_id}`}>
-        <p className="startup-card_desc">{description}</p>
-        <img src={image} alt="placeholder" className="startup-card_desc" />
+        <h3 className="text-lg font-semibold text-gray-900 hover:text-primary line-clamp-1">
+          {title}
+        </h3>
       </Link>
-      <div className="flex-between gap-3 mt-5">
+
+      {/* Image */}
+      <Link href={`/startup/${_id}`}>
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-48 object-cover rounded-md mt-3"
+        />
+      </Link>
+
+      {/* Bottom Row: Category + Details */}
+      <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
         <Link href={`/?query=${category?.toLowerCase()}`}>
-          <p className="text-16-medium">{category}</p>
+          <span className="bg-gray-100 px-2 py-1 rounded">{category}</span>
         </Link>
-        <Button className="startup-card_btn" asChild>
+        <Button className="px-3 py-1 text-sm" asChild>
           <Link href={`/startup/${_id}`}>Details</Link>
         </Button>
       </div>
+
+      {/* Date at Bottom Center */}
+      <p className="text-center text-xs mt-4 mb-4 text-gray-400">
+        {formatDate(_createdAt)}
+      </p>
     </li>
   );
-};
-
-export const StartUpCardSkeleton = () => {
-  <>
-    {[0, 1, 2, 3, 4].map((index) => {
-      <li key={cn("skeleton", index)}>
-        <Skeleton className="startup-card_skeleton" />
-      </li>;
-    })}
-  </>;
 };
 
 export default StartupCard;
