@@ -1,19 +1,33 @@
 import { defineQuery } from "next-sanity";
 
-export const STARTUPS_QUERY =
-  defineQuery(`*[_type == "startup" && defined(slug.current) &&  !defined($search) || title match $search || category match $search || author->name match $search] | order(_createdAt desc) {
-  _id, 
-  title, 
-  slug,
-  _createdAt,
-  author -> {
-    _id, name, image, bio
-  }, 
-  views,
-  description,
-  category,
-  image,
-}`);
+export const STARTUPS_QUERY = defineQuery(`
+  *[
+    _type == "startup" &&
+    defined(slug.current) &&
+    (
+      !defined($search) ||
+      lower(title) match $search ||
+      lower(category) match $search ||
+      lower(author->name) match $search
+    )
+  ] | order(_createdAt desc) {
+    _id, 
+    title, 
+    slug,
+    _createdAt,
+    author -> {
+      _id, name, image, bio
+    }, 
+    views,
+    description,
+    category,
+    image,
+    "likeCount": count(*[_type == "like" && startup._ref == ^._id]),
+    "bookmarkCount": count(*[_type == "bookmark" && startup._ref == ^._id]),
+  }
+`);
+
+
 
 export const STARTUP_BY_ID_QUERY =
   defineQuery(`*[_type == "startup" && _id == $id][0]{
@@ -29,6 +43,8 @@ export const STARTUP_BY_ID_QUERY =
   category,
   image,
   pitch,
+  "likeCount": count(*[_type == "like" && startup._ref == ^._id]),
+  "bookmarkCount": count(*[_type == "bookmark" && startup._ref == ^._id]),
 }`);
 
 export const STARTUP_VIEWS_QUERY = defineQuery(`
@@ -74,6 +90,8 @@ export const STARTUPS_BY_AUTHOR_QUERY =
   description,
   category,
   image,
+  "likeCount": count(*[_type == "like" && startup._ref == ^._id]),
+  "bookmarkCount": count(*[_type == "bookmark" && startup._ref == ^._id]),
 }`);
 
 export const PLAYLIST_BY_SLUG_QUERY =
@@ -97,6 +115,26 @@ export const PLAYLIST_BY_SLUG_QUERY =
     description,
     category,
     image,
-    pitch
+    pitch,
+    "likeCount": count(*[_type == "like" && startup._ref == ^._id]),
+    "bookmarkCount": count(*[_type == "bookmark" && startup._ref == ^._id]),
   }
 }`);
+
+export const LIKED_STARTUPS_BY_USER = defineQuery(`
+  *[_type == "like" && author._ref == $userId]{
+    startup->{
+      _id
+    }
+  }
+`);
+
+export const BOOKMARKED_STARTUPS_BY_USER = defineQuery(`
+  *[_type == "bookmark" && author._ref == $userId]{
+    startup->{
+      _id
+    }
+  }
+`);
+
+
