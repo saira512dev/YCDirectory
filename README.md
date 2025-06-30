@@ -1,6 +1,6 @@
 # 🚀 YC Directory – Discover and Submit Startups
 
-![YC Directory Banner](./public/liveApp.png)
+![YC Directory Banner](./public/yc.png)
 
 > A modern startup listing platform built with **Next.js**, **Sanity**, **Tailwind CSS**, and **Sentry**.
 
