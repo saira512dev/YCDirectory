@@ -2,9 +2,17 @@
 
 ![YC Directory Banner](./public/yc.png)
 
-> A modern startup listing platform built with **Next.js**, **Sanity**, **Tailwind CSS**, and **Sentry**.
+> A modern, full-stack startup discovery platform powered by **Next.js**, **Sanity**, **Tailwind CSS**, and **Sentry**.
 
-🔗 **Live Demo:** [https://directoryofstartups.netlify.app](https://directoryofstartups.netlify.app)
+YC Directory is a platform that allows users to explore, submit, like, and bookmark startups. It mimics platforms like Product Hunt or YC’s own startup list, giving users the ability to discover startups by category or popularity. Authenticated users can contribute new startup entries with rich markdown-based pitches, like and bookmark others' startups, and view their own liked/bookmarked content under their profile.
+
+Built using the **latest Next.js features**, the app uses a hybrid rendering strategy:
+
+- **Server-Side Rendering (SSR)** for personalized content like user dashboards
+- **Incremental Static Regeneration (ISR)** for performant content caching
+- **Client-Side Rendering (CSR)** where interactions like likes and bookmarks need instant updates
+
+The stack ensures fast load times, responsive UI, and seamless developer experience with strong error monitoring and flexible content management.
 
 ---
 
@@ -18,52 +26,91 @@
 
 ---
 
-✨ Features
-🔍 Search Startups by title or category
+## ✨ Features
 
-📝 Submit startups with markdown-based pitch
+- 🔍 Search startups by **title** or **category**
+- 📝 Submit new startups with **markdown-based rich pitch editor**
+- 🖼️ Upload startup **images** and categorize them
+- ✅ Strong **form validation** using Zod
+- 🔐 **User authentication** via GitHub (NextAuth.js)
+- ❤️ **Like** and 📌 **Bookmark** startups with real-time feedback
+- 📄 View **My Likes** and **My Bookmarks** under your profile
+- 👤 Each startup includes **author name and avatar**, linked to their profile
+- ⚡ **Fast performance** via SSR, ISR, and CSR where appropriate
+- 📷 **Full error monitoring** and stack tracing via Sentry
+- 📱 Fully **responsive** modern UI with Tailwind and Shadcn UI
 
-🖼️ Upload startup images and categorize them
+---
 
-✅ Form validation using Zod
+## 🧠 About Sanity & Sentry
 
-🔐 User authentication with NextAuth.js
+### 📊 Sanity
 
-📷 Sentry for error monitoring (client + server)
+Sanity is a headless CMS that provides real-time content editing, flexible schema, and powerful GROQ queries.
 
-⚡ Responsive, fast, and fully dynamic UI
+**Used for:**
 
-📦 Uses both SSR (Server-Side Rendering) and ISR (Incremental Static Regeneration) for optimal performance and freshness
+- Managing startup submissions
+- Fetching enriched content with author and stats
+- Querying likes, bookmarks, and categories
 
-🧠 About Sanity & Sentry
-📊 Sanity
-Sanity is a headless CMS that lets you manage structured content easily via a flexible schema and real-time collaborative Studio interface.
+### 🛡️ Sentry
 
-Used here for storing and fetching dynamic startup content.
+Sentry is a full-stack monitoring platform used to detect and fix errors across the application.
 
-🛡️ Sentry
-Sentry helps developers monitor and fix errors in real time by providing detailed error logs, stack traces, and performance metrics for both frontend and backend.
+**Used for:**
 
-Used here to track client and server errors with full visibility.
+- Monitoring both client-side and server-side errors
+- Logging form issues, query failures, or auth-related bugs
+- Improving user experience via early bug reporting
 
-⚙️ Running Locally
-Clone the repo
+---
 
-git clone https://github.com/your-username/yc-directory.git
-cd yc-directory
+## ⚙️ Running Locally
 
-Install dependencies
-npm install
+**1. Clone the repository**  
+`git clone https://github.com/your-username/yc-directory.git`  
+`cd yc-directory`
 
-Set up environment variables
-Create a .env.local file and add:
-NEXTAUTH_SECRET=your_secret
-NEXTAUTH_URL=http://localhost:3000
-SANITY_PROJECT_ID=your_sanity_id
-SANITY_DATASET=production
-SANITY_API_VERSION=2023-06-01
-SANITY_TOKEN=your_sanity_token
-SENTRY_AUTH_TOKEN=your_sentry_token
+**2. Install dependencies**  
+`npm install`
 
-Run the app
-npm run dev
+**3. Set up environment variables**  
+Create a `.env.local` file and add the following:
+
+- `NEXTAUTH_SECRET=your_secret`
+- `NEXTAUTH_URL=http://localhost:3000`
+- `SANITY_PROJECT_ID=your_sanity_project_id`
+- `SANITY_DATASET=production`
+- `SANITY_API_VERSION=2023-06-01`
+- `SANITY_TOKEN=your_sanity_token`
+- `SENTRY_AUTH_TOKEN=your_sentry_token`
+
+**4. Run the app**  
+`npm run dev`
+
+---
+
+## 📂 Folder Structure Highlights
+
+- `app/` – App Router-based structure using modern file-based routing
+- `components/` – Reusable UI components (using Shadcn UI + custom)
+- `lib/` – Utilities: data fetching, auth, enrichment, and formatting
+- `sanity/` – CMS config, client setup, and GROQ queries
+- `auth/` – NextAuth config with JWT mapping and session callbacks
+
+---
+
+## 🙌 Contributing
+
+Pull requests are welcome! If you have ideas to improve features, design, or performance, feel free to fork the repo and submit your suggestions.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+Built with ❤️ using Next.js
