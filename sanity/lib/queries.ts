@@ -121,20 +121,47 @@ export const PLAYLIST_BY_SLUG_QUERY =
   }
 }`);
 
-export const LIKED_STARTUPS_BY_USER = defineQuery(`
+export const LIKED_STARTUPS_BY_USER_QUERY = defineQuery(`
   *[_type == "like" && author._ref == $userId]{
     startup->{
-      _id
+      _id,
+      title,
+      description,
+      image,
+      category,
+      _createdAt,
+      views,
+      "author": author->{
+        _id,
+        name,
+        username,
+        image
+      },
+      "likeCount": count(*[_type == "like" && startup._ref == ^._id]),
+      "bookmarkCount": count(*[_type == "bookmark" && startup._ref == ^._id]),
     }
   }
 `);
 
-export const BOOKMARKED_STARTUPS_BY_USER = defineQuery(`
+
+export const BOOKMARKED_STARTUPS_BY_USER_QUERY = defineQuery(`
   *[_type == "bookmark" && author._ref == $userId]{
-    startup->{
-      _id
+    "startup": startup->{
+      _id,
+      title,
+      description,
+      image,
+      category,
+      _createdAt,
+      views,
+      "author": author->{
+        _id,
+        name,
+        username,
+        image
+      },
+      "likeCount": count(*[_type == "like" && startup._ref == ^._id]),
+      "bookmarkCount": count(*[_type == "bookmark" && startup._ref == ^._id])
     }
   }
 `);
-
-

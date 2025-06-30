@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import LikeBookmarkActions from "./LikeBookmarkActions";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export type StartupTypeCard = Omit<Startup, "author"> & {
   author?: Author;
@@ -30,7 +31,6 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
     description,
     image,
   } = post;
-  // console.log(post);
 
   return (
     <li className="relative rounded-lg border shadow-sm hover:shadow-lg p-4 bg-white">
@@ -81,5 +81,15 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
     </li>
   );
 };
+
+export const StartupCardSkeleton = () => (
+  <>
+    {[0, 1, 2, 3, 4].map((index: number) => (
+      <li key={cn("skeleton", index)}>
+        <Skeleton className="startup-card_skeleton" />
+      </li>
+    ))}
+  </>
+);
 
 export default StartupCard;

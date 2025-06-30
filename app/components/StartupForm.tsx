@@ -27,10 +27,8 @@ const StartupForm = () => {
         link: formData.get("link") as string,
         pitch,
       };
-      console.log(formValues);
 
       await formSchema.parseAsync(formValues);
-      console.log(formValues);
       const result = await createPitch(prevState, formData, pitch);
       if (result.status === "SUCCESS") {
         toast({

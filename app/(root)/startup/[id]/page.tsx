@@ -43,9 +43,10 @@ const Startup = async ({ params }: { params: Promise<{ id: string }> }) => {
       startups: [post],
       userId: session.user.id,
     });
+
+    enrichedPost = enrichedPost[0];
   }
   const parsedContent = md.render(post?.pitch || "");
-  console.log(enrichedPost);
   return (
     <>
       <section className="pink_container !min-h-[230px]">
@@ -58,10 +59,10 @@ const Startup = async ({ params }: { params: Promise<{ id: string }> }) => {
         <div className="mx-auto max-w-4xl mb-2">
           <LikeBookmarkActions
             startupId={id}
-            initialLiked={enrichedPost[0].hasLiked ?? false}
-            initialBookmarked={enrichedPost[0].hasBookmarked ?? false}
-            initialLikeCount={enrichedPost[0].likeCount || 0}
-            initialBookmarkCount={enrichedPost[0].bookmarkCount || 0}
+            initialLiked={enrichedPost.hasLiked ?? false}
+            initialBookmarked={enrichedPost.hasBookmarked ?? false}
+            initialLikeCount={enrichedPost.likeCount || 0}
+            initialBookmarkCount={enrichedPost.bookmarkCount || 0}
           />
         </div>
 

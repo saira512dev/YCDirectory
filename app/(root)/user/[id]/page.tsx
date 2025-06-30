@@ -1,4 +1,4 @@
-import { StartUpCardSkeleton } from "@/app/components/StartupCard";
+import { StartupCardSkeleton } from "@/app/components/StartupCard";
 import UserStartups from "@/app/components/UserStartups";
 import { auth } from "@/auth";
 import { client } from "@/sanity/lib/client";
@@ -15,7 +15,6 @@ export const experimental_ppr = true;
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
   const session = await auth();
-  console.log(session);
 
   const user = await client.fetch(AUTHOR_BY_ID_QUERY, { id });
 
@@ -50,9 +49,9 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
           <ul className="card_grid-sm">
             <Suspense
               fallback={
-                <p>
-                  <StartUpCardSkeleton />
-                </p>
+                <div>
+                  <StartupCardSkeleton />
+                </div>
               }
             >
               <UserStartups id={id} />

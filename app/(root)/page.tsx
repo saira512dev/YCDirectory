@@ -32,7 +32,6 @@ export default async function Home({
       userId: session.user.id,
     });
   }
-  // console.log(enrichedPosts);
 
   return (
     <>
