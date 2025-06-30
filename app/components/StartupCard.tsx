@@ -3,12 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { cn, formatDate } from "@/lib/utils";
 import { Author, Startup } from "@/sanity.types";
-import { toggleLike } from "@/lib/toggleLike";
-import { toggleBookmark } from "@/lib/toggleBookmark";
-import { BookmarkIcon, EyeIcon, Heart, HeartIcon } from "lucide-react";
+import { EyeIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useTransition } from "react";
 import LikeBookmarkActions from "./LikeBookmarkActions";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -33,7 +30,8 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
   } = post;
 
   return (
-    <li className="relative rounded-lg border shadow-sm hover:shadow-lg p-4 bg-white">
+    <li className="relative rounded-lg border shadow-sm hover:shadow-lg p-4 bg-white flex flex-col justify-between">
+      {/* Like + Views */}
       <div className="flex justify-between items-center mb-2 text-gray-500">
         <LikeBookmarkActions
           startupId={_id}
@@ -48,11 +46,12 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
         </div>
       </div>
 
-      {/* Title */}
+      {/* Title + Description */}
       <Link href={`/startup/${_id}`}>
         <h3 className="text-lg font-semibold text-gray-900 hover:text-primary line-clamp-1">
           {title}
         </h3>
+        <p className="text-sm text-gray-600 mt-1 line-clamp-3">{description}</p>
       </Link>
 
       {/* Image */}
@@ -64,7 +63,7 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
         />
       </Link>
 
-      {/* Bottom Row: Category + Details */}
+      {/* Category + Details */}
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
         <Link href={`/?query=${category?.toLowerCase()}`}>
           <span className="bg-gray-100 px-2 py-1 rounded">{category}</span>
@@ -74,8 +73,27 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
         </Button>
       </div>
 
+      {/* Author Info (Linked) */}
+      {author && (
+        <Link
+          href={`/user/${author._id}`}
+          className="flex items-center gap-2 mt-4 group"
+        >
+          <Image
+            src={author.image}
+            alt={author.name}
+            width={32}
+            height={32}
+            className="rounded-full"
+          />
+          <span className="text-sm text-gray-700 group-hover:text-primary">
+            {author.name}
+          </span>
+        </Link>
+      )}
+
       {/* Date at Bottom Center */}
-      <p className="text-center text-xs mt-4 mb-4 text-gray-400">
+      <p className="text-center text-xs mt-4 text-gray-400">
         {formatDate(_createdAt)}
       </p>
     </li>
