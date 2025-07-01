@@ -58,11 +58,11 @@ export default function ClientStartupList({ startups }: Props) {
       </div>
 
       {sorted.length > 0 ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {sorted.map((startup) => (
             <StartupCard key={startup._id} post={startup} />
           ))}
-        </div>
+        </ul>
       ) : (
         <p className="text-gray-500">No startups found.</p>
       )}

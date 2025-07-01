@@ -64,7 +64,7 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
       </Link>
 
       {/* Category + Details */}
-      <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
+      <div className="flex justify-between items-center mt-4 text-sm text-gray-800">
         <Link href={`/?query=${category?.toLowerCase()}`}>
           <span className="bg-gray-100 px-2 py-1 rounded">{category}</span>
         </Link>
@@ -80,8 +80,8 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
           className="flex items-center gap-2 mt-4 group"
         >
           <Image
-            src={author.image}
-            alt={author.name}
+            src={author.image || ""}
+            alt={`${author?.name} – Founder of ${title}`}
             width={32}
             height={32}
             className="rounded-full"
@@ -93,7 +93,7 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
       )}
 
       {/* Date at Bottom Center */}
-      <p className="text-center text-xs mt-4 text-gray-400">
+      <p className="text-center text-xs mt-4 text-gray-600">
         {formatDate(_createdAt)}
       </p>
     </li>
