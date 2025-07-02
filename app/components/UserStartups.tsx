@@ -10,10 +10,14 @@ import StartupCard, { StartupTypeCard } from "./StartupCard";
 
 const UserStartups = async ({ id }: { id: string }) => {
   const startups = await client.fetch(STARTUPS_BY_AUTHOR_QUERY, { id });
-  const enrichedStartups = await enrichStartups({
-    startups,
-    userId: id,
-  });
+  const session = await auth();
+  let enrichedStartups = startups;
+  if (session) {
+    enrichedStartups = await enrichStartups({
+      startups,
+      userId: id,
+    });
+  }
   return (
     <>
       {enrichedStartups.length > 0 ? (
