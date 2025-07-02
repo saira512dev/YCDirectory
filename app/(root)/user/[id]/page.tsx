@@ -43,9 +43,12 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
         </div>
 
         <div className="flex-1 flex flex-col gap-5 lg:-mt-5">
-          <p className="text-30-bold">
-            {session?.user.id === id ? "Your" : "All"} StartUps
+          <p className="text-30-bold text-center">
+            {session?.user.id === id
+              ? "Your Startups"
+              : `${user.name.split(" ")[0]}'s Startups`}
           </p>
+
           <ul className="card_grid-sm">
             <Suspense
               fallback={
